@@ -4,8 +4,12 @@ const sequelize = require('./db');
 const companyRoutes = require('./routes/companyRoutes');
 const app = express();
 const searchRouter = require('./Controllers/Search')
+const swaggerSpec = require('./swagger');
+const swaggerUi = require('swagger-ui-express');
 
-const PORT = process.env.PORT || 3001;
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 

@@ -3,6 +3,89 @@ const router = express.Router();
 const Company = require('../models/Company');
 
 
+/**
+ * @swagger
+ * tags:
+ *   name: Companies
+ *   description: API endpoints for managing companies
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Company:
+ *       type: object
+ *       properties:
+ *         companyName:
+ *           type: string
+ *           example: Example Company
+ *         contactName:
+ *           type: string
+ *           example: John Doe
+ *         email:
+ *           type: string
+ *           format: email
+ *           example: john@example.com
+ *         phone:
+ *           type: string
+ *           example: 1234567890
+ *         address:
+ *           type: string
+ *           example: 123 Main St
+ *         city:
+ *           type: string
+ *           example: New York
+ *         state:
+ *           type: string
+ *           example: NY
+ *         zipCode:
+ *           type: integer
+ *           example: 10001
+ *         website:
+ *           type: string
+ *           format: url
+ *           example: http://www.example.com
+ *         companyStatus:
+ *           type: string
+ *           enum: [Active, Inactive]
+ *           example: Active
+ *       required:
+ *         - companyName
+ *         - contactName
+ *         - email
+ *         - phone
+ *         - address
+ *         - city
+ *         - state
+ *         - zipCode
+ *         - companyStatus
+ */
+
+/**
+ * @swagger
+ * /companies:
+ *   post:
+ *     summary: Add a new company
+ *     tags: [Companies]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Company'
+ *     responses:
+ *       200:
+ *         description: New company added successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Company'
+ *       500:
+ *         description: Internal Server Error
+ */
+
+
 //POST method to list the companies in Database
 router.post('/',async(req,res)=>{
     try{
@@ -16,6 +99,21 @@ router.post('/',async(req,res)=>{
     }
 });
 
+
+
+/**
+ * @swagger
+ * /companies:
+ *   get:
+ *     summary: Retrieve all companies
+ *     tags: [Companies]
+ *     responses:
+ *       200:
+ *         description: Companies retrieved successfully
+ *       500:
+ *         description: Internal Server Error
+ */
+
 //GET method to retrieve all Companies 
 router.get('/',async(req,res)=>{
     try{
@@ -26,6 +124,37 @@ router.get('/',async(req,res)=>{
         res.status(500).json({error:'Internal Sever Error'})
     }
 });
+
+
+
+/**
+ * @swagger
+ * /companies/{companyId}:
+ *   put:
+ *     summary: Update a company
+ *     tags: [Companies]
+ *     parameters:
+ *       - in: path
+ *         name: companyId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID of the company to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Company'
+ *     responses:
+ *       200:
+ *         description: Company updated successfully
+ *       404:
+ *         description: Company not found
+ *       500:
+ *         description: Internal Server Error
+ */
+
 
 //PUT method to update the Company information 
 router.put('/:companyId', async(req,res)=>{
@@ -50,6 +179,29 @@ router.put('/:companyId', async(req,res)=>{
 
 });
 
+
+/**
+ * @swagger
+ * /companies/{companyId}:
+ *   delete:
+ *     summary: Delete a company
+ *     tags: [Companies]
+ *     parameters:
+ *       - in: path
+ *         name: companyId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID of the company to delete
+ *     responses:
+ *       200:
+ *         description: Company deleted successfully
+ *       404:
+ *         description: Company not found
+ *       500:
+ *         description: Internal Server Error
+ */
+
 //DELETE method to delete the Company Data 
 router.delete('/:companyId', async(req,res)=>{
     try {
@@ -71,6 +223,25 @@ router.delete('/:companyId', async(req,res)=>{
         res.status(500).json({error:'Internal Sever Error'}) 
     }
 })
+
+/**
+ * @swagger
+ * /companies/status:
+ *   get:
+ *     summary: Retrieve companies by status
+ *     tags: [Companies]
+ *     parameters:
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *         description: Status of the companies (Active or Inactive)
+ *     responses:
+ *       200:
+ *         description: Companies retrieved successfully
+ *       500:
+ *         description: Internal Server Error
+ */
 
 //GET method to retrive all companies by filter 
 router.get('/status',async(req,res)=>{
@@ -122,25 +293,5 @@ router.get('/pegination',async (req,res)=>{
 })
 
 
-// router.post('/search', async(req,res)=>{
-//     const {query} = req.body;
-//     try {
-//         const filter = {
-//             $or:[
-//                 {name:{regex:query,$options:'i'}},
-//                 {email:{regex:query,$options:'i'}},
-//             ]
-//         }
-//         const filterData = await this.search.findAll(filter);
-//         if(filterData===0){
-//             return res.status(404).json({message:'message not found'})
-//         }
-//             return res.status(200).json(filterData)
-//     } catch (error) {
-//         console.error('Error Fetching Companies:',error);
-//         res.status(500).json({error:'Internal Server Error'})
-//     }
-
-// })
 
 module.exports = router;
